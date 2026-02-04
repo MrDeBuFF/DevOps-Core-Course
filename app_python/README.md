@@ -110,3 +110,41 @@ The application is configured through environment variables:
 |HOST | 0.0.0.0 | Host interface to bind the server|
 |PORT | 6000 | Port number to listen on|
 |DEBUG | false | Debug mode (true/false)|
+
+
+## Docker
+
+### Build image locally
+
+```bash
+docker build -t devops-info-service:1.0 .
+```
+
+### Run container
+
+```bash
+docker run -p 6000:6000 devops-info-service:1.0
+```
+
+### Push image to Docker Hub
+
+```bash
+# Login
+docker login
+
+# Tag image
+docker tag devops-info-service:1.0 mrdebuff/devops-info-service:1.0
+
+# Push
+docker push mrdebuff/devops-info-service:1.0
+```
+
+### Pull image from Docker Hub
+
+```bash
+# Pull image
+docker pull mrdebuff/devops-info-service:1.0
+
+# Run container
+docker run -p 6000:6000 mrdebuff/devops-info-service:1.0
+```
