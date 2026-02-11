@@ -148,3 +148,19 @@ docker pull mrdebuff/devops-info-service:1.0
 # Run container
 docker run -p 6000:6000 mrdebuff/devops-info-service:1.0
 ```
+
+## Testing
+
+Run tests locally:
+
+```bash
+# Install dependencies
+pip install -r requirements.txt
+pip install -r requirements-dev.txt
+
+# Run tests
+pytest -v
+```
+
+![CI](https://github.com/MrDeBuFF/DevOps-Core-Course/actions/workflows/python-ci.yml/badge.svg)
+
