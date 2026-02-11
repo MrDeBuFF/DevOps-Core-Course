@@ -1,1 +1,15 @@
-test
+# Python
+__pycache__/
+*.py[cod]
+venv/
+*.log
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+
+# Test cache
+.pytest_cache
