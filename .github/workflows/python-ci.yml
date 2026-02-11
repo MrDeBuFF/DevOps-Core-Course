@@ -38,12 +38,19 @@ jobs:
           cd app_python
           pytest -v
       
+      - name: Install Snyk CLI
+        run: |
+          npm install -g snyk
+
+      - name: Authenticate Snyk
+        run: |
+          snyk auth ${{ secrets.SNYK_TOKEN }}
+
       - name: Run Snyk security scan
-        uses: snyk/actions/python@v1
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        with:
-          args: --file=app_python/requirements.txt --severity-threshold=high
+        run: |
+          cd app_python
+          snyk test --severity-threshold=high
+
 
 
 
