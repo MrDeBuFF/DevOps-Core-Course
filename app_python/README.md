@@ -1,5 +1,7 @@
 # DevOps Info Service
 
+![CI](https://github.com/MrDeBuFF/DevOps-Core-Course/actions/workflows/python-ci.yml/badge.svg)
+
 A lightweight web service built with Flask that provides detailed system information and health status monitoring.
 
 ## 📋 Overview
@@ -148,3 +150,38 @@ docker pull mrdebuff/devops-info-service:1.0
 # Run container
 docker run -p 6000:6000 mrdebuff/devops-info-service:1.0
 ```
+
+## Testing
+
+This project uses `pytest` for unit testing.
+
+### Install dependencies
+
+```bash
+pip install -r requirements.txt
+pip install -r requirements-dev.txt
+```
+
+### Run tests
+
+```bash
+pytest -v
+```
+
+Example output:
+
+![](docs/screenshots/07-pytest.png)
+
+### Code Quality
+
+Linting is performed using `flake8`:
+
+```bash
+flake8 app.py
+```
+
+### Security Scanning
+
+Dependency vulnerabilities are checked using `Snyk` during CI pipeline execution.
+
+Only high and critical severity vulnerabilities fail the build.

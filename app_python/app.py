@@ -22,7 +22,8 @@ START_TIME = datetime.now(timezone.utc)
 
 # Logging
 logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+    level=logging.INFO,
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 )
 logger = logging.getLogger(__name__)
 
@@ -44,7 +45,8 @@ def get_uptime():
     uptime = (datetime.now(timezone.utc) - START_TIME).total_seconds()
     hours = int(uptime // 3600)
     minutes = int((uptime % 3600) // 60)
-    return {"seconds": int(uptime), "human": f"{hours} hour, {minutes} minutes"}
+    return {"seconds": int(uptime),
+            "human": f"{hours} hour, {minutes} minutes"}
 
 
 def get_request_info():
@@ -73,14 +75,17 @@ def index():
         "runtime": {
             "uptime_seconds": uptime["seconds"],
             "uptime_human": uptime["human"],
-            "current_time": datetime.now(timezone.utc).isoformat().replace("+00:00", "")
+            "current_time": datetime.now(
+                timezone.utc).isoformat().replace("+00:00", "")
             + "Z",
             "timezone": "UTC",
         },
         "request": get_request_info(),
         "endpoints": [
-            {"path": "/", "method": "GET", "description": "Service information"},
-            {"path": "/health", "method": "GET", "description": "Health check"},
+            {"path": "/", "method": "GET",
+             "description": "Service information"},
+            {"path": "/health", "method": "GET",
+             "description": "Health check"},
         ],
     }
 
@@ -94,7 +99,8 @@ def health():
     uptime = get_uptime()
     response = {
         "status": "healthy",
-        "timestamp": datetime.now(timezone.utc).isoformat().replace("+00:00", "") + "Z",
+        "timestamp": datetime.now(timezone.utc).isoformat().replace("+00:00",
+                                                                    "") + "Z",
         "uptime_seconds": uptime["seconds"],
     }
 
