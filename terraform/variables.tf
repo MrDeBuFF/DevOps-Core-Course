@@ -1,16 +1,22 @@
 variable "zone" {
-  description = "YC zone"
+  description = "Availability zone for resources"
+  type        = string
   default     = "ru-central1-a"
 }
 
 variable "folder_id" {
-  description = "YC folder id"
+  description = "Yandex Cloud folder ID"
+  type        = string
 }
 
 variable "ssh_user" {
-  default = "ubuntu"
+  description = "Linux user for SSH access"
+  type        = string
+  default     = "ubuntu"
 }
 
 variable "ssh_public_key" {
   description = "Path to SSH public key"
+  type        = string
 }
+
