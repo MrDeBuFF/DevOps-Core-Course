@@ -8,6 +8,6 @@ terraform {
 }
 
 provider "yandex" {
-  zone = var.zone
+  zone      = var.zone
   folder_id = var.folder_id
 }
