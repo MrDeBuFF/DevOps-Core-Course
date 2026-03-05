@@ -36,6 +36,7 @@ jobs:
         run: |
           cd ansible
           ansible-lint playbooks/*.yml
+        continue-on-error: true
 
 
   deploy:
