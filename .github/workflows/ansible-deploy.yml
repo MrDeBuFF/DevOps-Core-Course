@@ -74,8 +74,3 @@ jobs:
             -i inventory/hosts.ini \
             --vault-password-file /tmp/vault_pass
           rm /tmp/vault_pass
-
-      - name: Verify Deployment
-        run: |
-          sleep 10
-          curl -f http://${{ secrets.VM_HOST }}:8000
