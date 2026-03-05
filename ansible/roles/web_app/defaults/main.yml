@@ -3,3 +3,5 @@ restart_policy: unless-stopped
 app_port_2: 6000 # My port in the container is 6000 instead of 5000 because I use macOS and 5000 is already in use by system services
 
 app_environment_vars: {}
+
+web_app_wipe: false
