@@ -1,13 +1,45 @@
-- name: Update apt cache
-  apt:
-    update_cache: yes
-    cache_valid_time: 3600
+---
 
-- name: Install common packages
-  apt:
-    name: "{{ common_packages }}"
-    state: present
+- name: Package management
+  block:
 
-- name: Set timezone
-  community.general.timezone:
-    name: Europe/Moscow
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: Install common packages
+      apt:
+        name: "{{ common_packages }}"
+        state: present
+
+  rescue:
+
+    - name: Fix apt cache if update failed
+      command: apt-get update --fix-missing
+
+  always:
+
+    - name: Log packages block completion
+      copy:
+        content: "Packages block finished"
+        dest: /tmp/common_packages.log
+
+  become: true
+
+  tags:
+    - packages
+    - common
+
+- name: User configuration
+  block:
+
+    - name: Set timezone
+      community.general.timezone:
+        name: Europe/Moscow
+
+  become: true
+
+  tags:
+    - users
+    - common
