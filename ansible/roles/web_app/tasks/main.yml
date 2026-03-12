@@ -1,0 +1,36 @@
+---
+
+- name: Include wipe tasks
+  include_tasks: wipe.yml
+  tags:
+    - web_app_wipe
+
+- name: Deploy application with Docker Compose
+  block:
+
+    - name: Create app directory
+      file:
+        path: "/opt/{{ app_name }}"
+        state: directory
+        mode: '0755'
+
+    - name: Template docker-compose
+      template:
+        src: docker-compose.yml.j2
+        dest: "/opt/{{ app_name }}/docker-compose.yml"
+
+    - name: Deploy container
+      community.docker.docker_compose_v2:
+        project_src: "/opt/{{ app_name }}"
+        state: present
+        pull: always
+
+  rescue:
+
+    - name: Deployment failed
+      debug:
+        msg: "Deployment failed"
+
+  tags:
+    - app_deploy
+    - compose

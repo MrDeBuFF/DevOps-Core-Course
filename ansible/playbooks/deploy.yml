@@ -1,4 +1,4 @@
 - name: Deploy application
   hosts: webservers
   roles:
-    - app_deploy
+    - web_app
