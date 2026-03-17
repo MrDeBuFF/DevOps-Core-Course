@@ -239,5 +239,5 @@ def internal_error(error):
 if __name__ == "__main__":
     logger.info("Starting DevOps Info Service v1.0.0")
     logger.info(f"Server running at http://{HOST}:{PORT}")
-    
+
     app.run(host=HOST, port=PORT, debug=DEBUG)
