@@ -5,6 +5,10 @@ FROM python:3.13-slim
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1
 
+# Устанавливаем curl
+RUN apt-get update && apt-get install -y curl \
+    && rm -rf /var/lib/apt/lists/*
+
 # Создаём non-root пользователя
 RUN groupadd -r appuser && useradd -r -g appuser appuser
 
