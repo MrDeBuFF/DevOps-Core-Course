@@ -319,8 +319,6 @@ containerPort: 6000
 targetPort: 6000
 ```
 
----
-
 ### Debugging Tools Used
 
 ```bash
