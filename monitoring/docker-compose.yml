@@ -1,6 +1,28 @@
-version: "3.8"
-
 services:
+
+  prometheus:
+    image: prom/prometheus:v3.9.0
+    ports:
+      - "9090:9090"
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.retention.time=5d'
+      - '--storage.tsdb.retention.size=5GB'
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus-data:/prometheus
+    networks:
+      - logging
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:9090/-/healthy || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
 
   loki:
     image: grafana/loki:3.0.0
@@ -60,7 +82,7 @@ services:
       - GF_SECURITY_ADMIN_USER=${GRAFANA_ADMIN_USER}
       - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD}
     depends_on:
-      - loki
+      - prometheus
     healthcheck:
       test: ["CMD-SHELL", "wget -q --spider http://127.0.0.1:3000/api/health || exit 1"]
       interval: 10s
@@ -95,6 +117,11 @@ services:
         reservations:
           cpus: '0.25'
           memory: 128M
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:6000/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 networks:
   logging:
@@ -102,3 +129,4 @@ networks:
 volumes:
   loki-data:
   grafana-data:
+  prometheus-data:
