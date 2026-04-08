@@ -31,3 +31,7 @@ readinessProbe:
   path: /health
   initialDelaySeconds: 5
   periodSeconds: 3
+
+secret:
+  username: "change-me"
+  password: "change-me"

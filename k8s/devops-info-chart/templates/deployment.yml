@@ -16,6 +16,10 @@ spec:
     metadata:
       labels:
         app: devops-info
+      annotations:
+        vault.hashicorp.com/agent-inject: "true"
+        vault.hashicorp.com/role: "myapp-role"
+        vault.hashicorp.com/agent-inject-secret-config: "secret/data/myapp/config"
 
     spec:
       containers:
@@ -29,6 +33,10 @@ spec:
           env:
             - name: VERSION
               value: "{{ .Values.env.VERSION }}"
+
+          envFrom:
+            - secretRef:
+                name: {{ include "devops-info-chart.fullname" . }}-secret
 
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
