@@ -21,6 +21,7 @@ resources:
 
 env:
   VERSION: "v1"
+  APP_ENV: "dev"
 
 livenessProbe:
   path: /health
@@ -35,3 +36,8 @@ readinessProbe:
 secret:
   username: "change-me"
   password: "change-me"
+
+persistence:
+  enabled: true
+  size: 100Mi
+  storageClass: ""

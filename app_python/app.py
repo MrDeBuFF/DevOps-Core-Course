@@ -20,6 +20,13 @@ from prometheus_client import (
     CONTENT_TYPE_LATEST
 )
 
+from threading import Lock
+
+DATA_DIR = "/data"
+VISITS_FILE = os.path.join(DATA_DIR, "visits")
+
+lock = Lock()
+
 app = Flask(__name__)
 
 # Configuration
@@ -139,12 +146,35 @@ def get_request_info():
     }
 
 
+def read_visits():
+    try:
+        with open(VISITS_FILE, "r") as f:
+            return int(f.read())
+    except:
+        return 0
+
+
+def write_visits(count):
+    with open(VISITS_FILE, "w") as f:
+        f.write(str(count))
+
+
+def increment_visits():
+    with lock:
+        count = read_visits()
+        count += 1
+        write_visits(count)
+        return count
+
+
 # Routes
 @app.route("/")
 def index():
     endpoint_calls.labels(endpoint="/").inc()
 
     uptime = get_uptime()
+
+    visits = increment_visits()
 
     response = {
         "service": {
@@ -171,6 +201,7 @@ def index():
             {"path": "/metrics", "method": "GET",
              "description": "Prometheus metrics"},
         ],
+        "visits": visits,
     }
 
     logger.info(f"Request: {request.method} {request.path}")
@@ -200,6 +231,11 @@ def health():
 def metrics():
     return generate_latest(), 200, {"Content-Type": CONTENT_TYPE_LATEST}
 
+
+@app.route("/visits")
+def visits():
+    count = read_visits()
+    return jsonify({"visits": count}), 200
 
 # Errors
 
