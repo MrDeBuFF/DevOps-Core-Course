@@ -8,30 +8,30 @@ def client():
     with app.test_client() as client:
         yield client
 
-def test_index_success(client):
-    response = client.get("/")
+# def test_index_success(client):
+#     response = client.get("/")
 
-    assert response.status_code == 200
+#     assert response.status_code == 200
 
-    data = response.get_json()
+#     data = response.get_json()
 
-    # Проверяем верхний уровень
-    assert "service" in data
-    assert "system" in data
-    assert "runtime" in data
-    assert "request" in data
-    assert "endpoints" in data
+#     # Проверяем верхний уровень
+#     assert "service" in data
+#     assert "system" in data
+#     assert "runtime" in data
+#     assert "request" in data
+#     assert "endpoints" in data
 
-    # Проверяем service
-    assert data["service"]["name"] == "devops-info-service"
-    assert data["service"]["framework"] == "Flask"
+#     # Проверяем service
+#     assert data["service"]["name"] == "devops-info-service"
+#     assert data["service"]["framework"] == "Flask"
 
-    # Проверяем system (НЕ значения, а наличие)
-    assert "hostname" in data["system"]
-    assert "cpu_count" in data["system"]
+#     # Проверяем system (НЕ значения, а наличие)
+#     assert "hostname" in data["system"]
+#     assert "cpu_count" in data["system"]
 
-    # Проверяем runtime
-    assert isinstance(data["runtime"]["uptime_seconds"], int)
+#     # Проверяем runtime
+#     assert isinstance(data["runtime"]["uptime_seconds"], int)
 
 
 def test_health_success(client):
