@@ -150,7 +150,7 @@ def read_visits():
     try:
         with open(VISITS_FILE, "r") as f:
             return int(f.read())
-    except:
+    except Exception:
         return 0
 
 
@@ -238,6 +238,7 @@ def visits():
     return jsonify({"visits": count}), 200
 
 # Errors
+
 
 @app.errorhandler(404)
 def not_found(error):
