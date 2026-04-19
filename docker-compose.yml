@@ -1,0 +1,9 @@
+version: "3.9"
+
+services:
+  app:
+    build: ./app_python
+    ports:
+      - "6000:6000"
+    volumes:
+      - ./data:/data

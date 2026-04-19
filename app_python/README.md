@@ -9,6 +9,7 @@ A lightweight web service built with Flask that provides detailed system informa
 DevOps Info Service is a Python-based web application that exposes two main endpoints:
 - **GET /** - Comprehensive service and system information
 - **GET /health** - Health check endpoint for monitoring and probes
+- **GET /visits** - Incremental visit counter
 
 The service is designed to be configurable, production-ready, and follows Python best practices.
 
@@ -102,6 +103,24 @@ curl http://localhost:6000/health
 
 - 200 OK: Service is healthy
 - 5xx: Service is unhealthy (implemented in future labs)
+
+### GET /visits
+
+Show the number of times the service has been visited.
+
+**Request:**
+
+```bash
+curl http://localhost:6000/visits
+```
+
+**Response example:**
+
+```json
+{
+  "visits": 2
+}
+```
 
 ### ⚙️ Configuration
 
