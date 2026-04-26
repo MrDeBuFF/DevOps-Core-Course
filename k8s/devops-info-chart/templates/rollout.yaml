@@ -68,6 +68,12 @@ spec:
             claimName: {{ include "devops-info-chart.fullname" . }}-data
 
   strategy:
+    {{- if eq .Values.rolloutStrategy "blueGreen" }}
+    blueGreen:
+      activeService: {{ include "devops-info-chart.fullname" . }}
+      previewService: {{ include "devops-info-chart.fullname" . }}-preview
+      autoPromotionEnabled: false
+    {{- else }}
     canary:
       steps:
         - setWeight: 20
@@ -86,3 +92,4 @@ spec:
             duration: 30s
 
         - setWeight: 100
+    {{- end }}

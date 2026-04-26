@@ -13,7 +13,9 @@ spec:
     path: k8s/devops-info-chart
     helm:
       valueFiles:
+        - values.yaml
         - values-dev.yaml
+        - values-bluegreen.yaml
 
   destination:
     server: https://kubernetes.default.svc
