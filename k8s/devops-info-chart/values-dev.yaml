@@ -5,6 +5,7 @@ image:
 
 service:
   type: NodePort
+  nodePort: 30081
 
 resources:
   requests:
@@ -13,3 +14,6 @@ resources:
   limits:
     cpu: "100m"
     memory: "128Mi"
+
+env:
+  VERSION: "v3"

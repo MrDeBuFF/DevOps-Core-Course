@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "devops-info-chart.fullname" . }}-preview
+
+spec:
+  type: ClusterIP
+
+  selector:
+    app: devops-info
+
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: {{ .Values.service.targetPort }}
