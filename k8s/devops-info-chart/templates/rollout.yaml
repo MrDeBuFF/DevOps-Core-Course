@@ -1,0 +1,88 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: {{ include "devops-info-chart.fullname" . }}
+  labels:
+    {{- include "devops-info-chart.labels" . | nindent 4 }}
+
+spec:
+  replicas: {{ .Values.replicaCount }}
+
+  selector:
+    matchLabels:
+      app: devops-info
+
+  template:
+    metadata:
+      labels:
+        app: devops-info
+
+    spec:
+      containers:
+        - name: devops-info
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+
+          ports:
+            - containerPort: {{ .Values.service.targetPort }}
+
+          env:
+            - name: VERSION
+              value: "{{ .Values.env.VERSION }}"
+
+          envFrom:
+            - configMapRef:
+                name: {{ include "devops-info-chart.fullname" . }}-env
+            - secretRef:
+                name: {{ include "devops-info-chart.fullname" . }}-secret
+
+          volumeMounts:
+            - name: config-volume
+              mountPath: /config
+            - name: data-volume
+              mountPath: /data
+
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+
+          livenessProbe:
+            httpGet:
+              path: {{ .Values.livenessProbe.path }}
+              port: {{ .Values.service.targetPort }}
+            initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+
+          readinessProbe:
+            httpGet:
+              path: {{ .Values.readinessProbe.path }}
+              port: {{ .Values.service.targetPort }}
+            initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+
+      volumes:
+        - name: config-volume
+          configMap:
+            name: {{ include "devops-info-chart.fullname" . }}-config
+        - name: data-volume
+          persistentVolumeClaim:
+            claimName: {{ include "devops-info-chart.fullname" . }}-data
+
+  strategy:
+    canary:
+      steps:
+        - setWeight: 20
+        - pause: {}
+
+        - setWeight: 40
+        - pause:
+            duration: 30s
+
+        - setWeight: 60
+        - pause:
+            duration: 30s
+
+        - setWeight: 80
+        - pause:
+            duration: 30s
+
+        - setWeight: 100
