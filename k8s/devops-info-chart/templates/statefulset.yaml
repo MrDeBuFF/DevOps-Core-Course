@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "devops-info-chart.fullname" . }}
+  labels:
+    {{- include "devops-info-chart.labels" . | nindent 4 }}
+
+spec:
+  serviceName: {{ include "devops-info-chart.fullname" . }}-headless
+
+  replicas: {{ .Values.replicaCount }}
+
+  selector:
+    matchLabels:
+      app: devops-info
+
+  template:
+    metadata:
+      labels:
+        app: devops-info
+
+    spec:
+      containers:
+        - name: devops-info
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+
+          ports:
+            - containerPort: {{ .Values.service.targetPort }}
+
+          env:
+            - name: VERSION
+              value: "{{ .Values.env.VERSION }}"
+
+          envFrom:
+            - configMapRef:
+                name: {{ include "devops-info-chart.fullname" . }}-env
+            - secretRef:
+                name: {{ include "devops-info-chart.fullname" . }}-secret
+
+          volumeMounts:
+            - name: config-volume
+              mountPath: /config
+            - name: data
+              mountPath: /data
+
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+
+      volumes:
+        - name: config-volume
+          configMap:
+            name: {{ include "devops-info-chart.fullname" . }}-config
+
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: {{ .Values.persistence.size }}
