@@ -1,0 +1,93 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "devops-info-chart.fullname" . }}
+  labels:
+    {{- include "devops-info-chart.labels" . | nindent 4 }}
+
+spec:
+  serviceName: {{ include "devops-info-chart.fullname" . }}-headless
+
+  replicas: {{ .Values.replicaCount }}
+
+  selector:
+    matchLabels:
+      app: devops-info
+
+  template:
+    metadata:
+      labels:
+        app: devops-info
+
+    spec:
+      initContainers:
+        - name: init-download
+          image: busybox:1.36
+          command:
+            - sh
+            - -c
+            - |
+              echo "Downloading file..."
+              wget -O /work-dir/index.html https://example.com
+              echo "Download completed"
+          volumeMounts:
+            - name: workdir
+              mountPath: /work-dir
+        - name: wait-for-kubernetes
+          image: busybox:1.36
+          command:
+            - sh
+            - -c
+            - |
+              echo "Waiting for kubernetes.default.svc..."
+              until nslookup kubernetes.default.svc.cluster.local; do
+                echo "Service not ready yet..."
+                sleep 2
+              done
+              echo "Service is ready"
+      containers:
+        - name: devops-info
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+
+          ports:
+            - containerPort: {{ .Values.service.targetPort }}
+              name: http
+
+          env:
+            - name: VERSION
+              value: "{{ .Values.env.VERSION }}"
+
+          envFrom:
+            - configMapRef:
+                name: {{ include "devops-info-chart.fullname" . }}-env
+            - secretRef:
+                name: {{ include "devops-info-chart.fullname" . }}-secret
+
+          volumeMounts:
+            - name: config-volume
+              mountPath: /config
+            - name: data
+              mountPath: /data
+            - name: workdir
+              mountPath: /init-data
+
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+
+      volumes:
+        - name: config-volume
+          configMap:
+            name: {{ include "devops-info-chart.fullname" . }}-config
+        - name: workdir
+          emptyDir: {}
+
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: {{ .Values.persistence.size }}
