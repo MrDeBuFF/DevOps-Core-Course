@@ -9,7 +9,7 @@ spec:
 
   source:
     repoURL: https://github.com/MrDeBuFF/DevOps-Core-Course.git
-    targetRevision: lab15
+    targetRevision: lab16
     path: k8s/devops-info-chart
     helm:
       valueFiles:
